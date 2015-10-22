@@ -8,13 +8,13 @@ var Music = Parse.Object.extend("Music");
 var sweetTune = new Music();
 
 // Set a property 'band' equal to a band name
-sweetTune.set('band','Muse');
+sweetTune.set('band','');
 
 // Set a property 'website' equal to the band's website
-sweetTune.set('website','Muse.com');
+sweetTune.set('website','');
     
 // Set a property 'song' equal to a song
-sweetTune.set('song','best song');
+sweetTune.set('song','');
 
 // Save your instance of your song -- and go see it on parse.com!
 sweetTune.save();
@@ -26,6 +26,10 @@ $('form').submit(function() {
 	var newTune = new Music();
 
 	// For each input element, set a property of your new instance equal to the input's value
+    // $(this).find('input').each(function(){
+    //     music.set($(this.attr('id')))
+
+
 	var band = $('#band').val()
 	newTune.set('band', band)
 	var website = $('#website').val()
@@ -33,12 +37,13 @@ $('form').submit(function() {
 	var song = $('#song').val()
 	newTune.set('song', song)
 	// After setting each property, save your new instance back to your database
-	newTune.save()
+	newTune.save(null,)
+    getData()
 
 	//clear it out
 	$('#band').val(' ')
 	$('#website').val(' ')
-	$('#song').val(' '))
+	$('#song').val(' ')
 	
 	return false
 })
@@ -50,31 +55,49 @@ var getData = function() {
 	
 
 	// Set up a new query for our Music class
-
+    var query = new Parse.Query(Music)
 
 	// Set a parameter for your query -- where the website property isn't missing
-
+    query.notEqualTo('website','')
 
 	/* Execute the query using ".find".  When successful:
 	    - Pass the returned data into your buildList function
 	*/
+    query.find({
+        success:function(results) {
+            buildList(results)
+        }
+    })
 }
 
 // A function to build your list
 var buildList = function(data) {
-	// Empty out your unordered list
-	
+	// Empty out your ordered list
+	$('ol').empty()
 	// Loop through your data, and pass each element to the addItem function
-
+    for (x in data) {
+        addItem(data[x])
+    }
+//     data.forEach(function(d){
+//         addItem(d);
+//     })
 }
 
 
 // This function takes in an item, adds it to the screen
 var addItem = function(item) {
 	// Get parameters (website, band, song) from the data item passed to the function
-
+    var webTemp = item.get('website')
+	var bandTemp = item.get('band')
+    var songTemp = item.get('song')
 	
-	// Append li that includes text from the data item
+    // Append li that includes text from the data item
+    var li = $('<li>'+ webTemp +'</li>')
+    var button = $('<button class="btn-danger"><span class</button>')
+    button.click(function() {
+        item.destroy()
+    }
+    $("ol").append(li)
 
 
 	
@@ -83,5 +106,5 @@ var addItem = function(item) {
 }
 
 // Call your getData function when the page loads
-
+getData()
 
